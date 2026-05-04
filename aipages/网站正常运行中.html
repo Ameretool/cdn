@@ -1,0 +1,175 @@
+
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+    <title>Site Ready · 网站正常运行中</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        /* 背景渐变统一色调 */
+        body {
+            min-height: 100vh;
+            background: linear-gradient(145deg, #f4f7ff 0%, #e9eefc 100%);
+            font-family: 'Segoe UI', 'Inter', system-ui, -apple-system, sans-serif;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 1rem;
+        }
+
+        /* 卡片背景与背景主色相同，但通过边框和阴影区分 */
+        .card {
+            background: #f4f7ff;          /* 与渐变起点色一致，融为一体 */
+            border-radius: 2rem;
+            box-shadow: 0 20px 35px -12px rgba(0, 0, 0, 0.1);
+            padding: 2rem 2rem 2.5rem;
+            text-align: center;
+            max-width: 500px;
+            width: 100%;
+            transition: all 0.2s ease;
+            border: 1px solid rgba(255, 255, 255, 0.8);
+        }
+
+        /* 浮动图标动画 */
+        .icon {
+            font-size: 4rem;
+            margin-bottom: 1rem;
+            display: inline-block;
+            animation: float 3s ease-in-out infinite;
+        }
+
+        @keyframes float {
+            0% { transform: translateY(0px); }
+            50% { transform: translateY(-12px); }
+            100% { transform: translateY(0px); }
+        }
+
+        h1 {
+            font-size: 1.8rem;
+            font-weight: 600;
+            background: linear-gradient(135deg, #1e2a6e, #5b3b9c);
+            background-clip: text;
+            -webkit-background-clip: text;
+            color: transparent;
+            margin-bottom: 0.5rem;
+        }
+
+        .status {
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            background: rgba(46, 125, 50, 0.12);
+            padding: 0.4rem 1rem;
+            border-radius: 60px;
+            margin: 1rem 0 1.2rem 0;
+            font-size: 0.9rem;
+            font-weight: 500;
+            color: #2e7d32;
+            border: 1px solid rgba(46, 125, 50, 0.2);
+        }
+
+        .dot {
+            width: 10px;
+            height: 10px;
+            background-color: #2e7d32;
+            border-radius: 50%;
+            display: inline-block;
+            animation: pulse 1.4s infinite ease;
+        }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 1; transform: scale(1); }
+            50% { opacity: 0.5; transform: scale(0.8); }
+        }
+
+        /* 三个跳动圆点 */
+        .loader {
+            display: flex;
+            justify-content: center;
+            gap: 8px;
+            margin: 1.5rem 0 0.5rem;
+        }
+        .loader span {
+            width: 10px;
+            height: 10px;
+            background-color: #4f46e5;
+            border-radius: 50%;
+            display: inline-block;
+            animation: bounce 1.2s infinite ease-in-out both;
+        }
+        .loader span:nth-child(1) { animation-delay: -0.32s; }
+        .loader span:nth-child(2) { animation-delay: -0.16s; }
+        @keyframes bounce {
+            0%, 80%, 100% { transform: scale(0.6); opacity: 0.5; }
+            40% { transform: scale(1); opacity: 1; }
+        }
+
+        .message {
+            margin-top: 1rem;
+            color: #4a5a8a;
+            font-size: 0.9rem;
+        }
+
+        .footer {
+            margin-top: 1.8rem;
+            font-size: 0.75rem;
+            color: #6c7a9e;
+            border-top: 1px dashed #cbd5ff;
+            padding-top: 1rem;
+            display: flex;
+            justify-content: center;
+            gap: 1rem;
+            flex-wrap: wrap;
+        }
+        .footer a {
+            color: #4f46e5;
+            text-decoration: none;
+            font-weight: 500;
+        }
+        .footer a:hover {
+            text-decoration: underline;
+        }
+
+        /* 响应式 */
+        @media (max-width: 480px) {
+            .card {
+                padding: 1.5rem;
+            }
+            h1 {
+                font-size: 1.4rem;
+            }
+            .icon {
+                font-size: 3rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="card">
+        <div class="icon">✨</div>
+        <h1>Site Ready</h1>
+        <div class="status">
+            <span class="dot"></span>
+            <span>网站正常运行中</span>
+        </div>
+        <div class="loader">
+            <span></span>
+            <span></span>
+            <span></span>
+        </div>
+        <div class="message">
+            🌟 服务稳定 · 欢迎访问 🌟
+        </div>
+        <div class="footer">
+            <span>© 2025 </span>
+            <a href="https://gb.ooo" target="_blank" rel="noopener noreferrer">gb.ooo</a>
+        </div>
+    </div>
+</body>
+</html>
