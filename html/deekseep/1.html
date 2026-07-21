@@ -1,0 +1,993 @@
+
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>ORG.OOO — 品牌引导页</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" />
+    <style>
+        /* ═══════════════════════════════════════════
+           CSS 变量（默认夜间模式）
+           ═══════════════════════════════════════════ */
+        :root {
+            --bg-body: #07071a;
+            --bg-nav: rgba(7, 7, 26, 0.55);
+            --bg-footer: rgba(7, 7, 26, 0.4);
+            --bg-badge: rgba(255, 255, 255, 0.04);
+            --border-badge: rgba(255, 255, 255, 0.07);
+            --text-primary: #ffffffee;
+            --text-secondary: #ffffff88;
+            --text-muted: #ffffff44;
+            --border-nav: rgba(255, 255, 255, 0.06);
+            --border-footer: rgba(255, 255, 255, 0.05);
+            --shadow-nav: 0 4px 30px rgba(0, 0, 0, 0.4);
+            --accent: #6366f1;
+            --accent-alt: #ec4899;
+            --gradient: linear-gradient(135deg, #667eea, #6366f1, #a855f7, #ec4899);
+            --gradient-sm: linear-gradient(135deg, #667eea, #ec4899);
+            --btn-shadow: 0 4px 40px rgba(99, 102, 241, 0.4);
+            --btn-shadow-hover: 0 12px 60px rgba(99, 102, 241, 0.6);
+            --transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        /* ── 白天模式（彻底明亮） ── */
+        .theme-light {
+            --bg-body: #ffffff;                /* 纯白背景 */
+            --bg-nav: rgba(255, 255, 255, 0.96); /* 几乎不透明 */
+            --bg-footer: rgba(255, 255, 255, 0.96);
+            --bg-badge: rgba(0, 0, 0, 0.04);
+            --border-badge: rgba(0, 0, 0, 0.08);
+            --text-primary: #111111;           /* 纯黑偏一点 */
+            --text-secondary: #333333;         /* 深灰 */
+            --text-muted: #666666;             /* 中灰 */
+            --border-nav: rgba(0, 0, 0, 0.06);
+            --border-footer: rgba(0, 0, 0, 0.06);
+            --shadow-nav: 0 4px 30px rgba(0, 0, 0, 0.05);
+            --btn-shadow: 0 4px 30px rgba(99, 102, 241, 0.2);
+            --btn-shadow-hover: 0 12px 50px rgba(99, 102, 241, 0.35);
+        }
+
+        /* ═══════════════════════════════════════════
+           RESET & BASE
+           ═══════════════════════════════════════════ */
+        *,
+        *::before,
+        *::after {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        html {
+            scroll-behavior: smooth;
+        }
+
+        body {
+            min-height: 100vh;
+            background: var(--bg-body);
+            font-family: 'SF Pro Display', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'PingFang SC', 'Microsoft YaHei', sans-serif;
+            color: var(--text-primary);
+            overflow: hidden;
+            user-select: none;
+            -webkit-font-smoothing: antialiased;
+            transition: background 0.4s ease, color 0.4s ease;
+        }
+
+        /* ═══════════════════════════════════════════
+           CANVAS 背景层
+           ═══════════════════════════════════════════ */
+        #particles-canvas {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 0;
+            pointer-events: none;
+            display: block;
+            transition: opacity 0.4s;
+        }
+
+        /* 白天模式下粒子颜色淡一些，但我们可以通过 JS 调节，此处不处理 */
+        #globe-canvas {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 1;
+            pointer-events: none;
+            display: block;
+        }
+
+        /* ═══════════════════════════════════════════
+           顶部导航
+           ═══════════════════════════════════════════ */
+        .navbar {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            z-index: 100;
+            padding: 0 48px;
+            height: 68px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            background: var(--bg-nav);
+            backdrop-filter: blur(16px) saturate(1.4);
+            -webkit-backdrop-filter: blur(16px) saturate(1.4);
+            border-bottom: 1px solid var(--border-nav);
+            transition: var(--transition);
+        }
+
+        .navbar.scrolled {
+            background: var(--bg-nav);
+            box-shadow: var(--shadow-nav);
+        }
+
+        .nav-brand {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            font-size: 20px;
+            font-weight: 800;
+            letter-spacing: -0.5px;
+            color: var(--text-primary);
+            text-decoration: none;
+        }
+
+        .nav-brand .logo-icon {
+            width: 38px;
+            height: 38px;
+            background: var(--gradient-sm);
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 18px;
+            box-shadow: 0 0 24px rgba(99, 102, 241, 0.35);
+            flex-shrink: 0;
+            color: #fff;
+        }
+
+        .nav-brand span {
+            background: var(--gradient-sm);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .nav-right {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 36px;
+            align-items: center;
+        }
+
+        .nav-links a {
+            font-size: 14px;
+            font-weight: 500;
+            color: var(--text-secondary);
+            letter-spacing: 0.5px;
+            transition: color 0.3s;
+            text-decoration: none;
+            position: relative;
+        }
+
+        .nav-links a::after {
+            content: '';
+            position: absolute;
+            bottom: -4px;
+            left: 0;
+            width: 0;
+            height: 2px;
+            background: var(--gradient-sm);
+            border-radius: 2px;
+            transition: width 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .nav-links a:hover {
+            color: var(--text-primary);
+        }
+        .nav-links a:hover::after {
+            width: 100%;
+        }
+
+        .nav-links .nav-cta {
+            padding: 8px 28px;
+            background: rgba(99, 102, 241, 0.15);
+            border: 1px solid rgba(99, 102, 241, 0.3);
+            border-radius: 50px;
+            color: var(--accent) !important;
+            font-weight: 600;
+            transition: var(--transition);
+        }
+
+        .nav-links .nav-cta:hover {
+            background: rgba(99, 102, 241, 0.28);
+            border-color: var(--accent);
+            box-shadow: 0 0 30px rgba(99, 102, 241, 0.2);
+            transform: translateY(-1px);
+        }
+        .nav-links .nav-cta::after {
+            display: none;
+        }
+
+        /* ── 控制按钮（主题 + 语言） ── */
+        .ctrl-btn {
+            background: rgba(255, 255, 255, 0.06);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 50%;
+            width: 38px;
+            height: 38px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 18px;
+            cursor: pointer;
+            color: var(--text-secondary);
+            transition: var(--transition);
+            background: var(--bg-nav);
+            border-color: var(--border-nav);
+        }
+
+        .ctrl-btn:hover {
+            background: rgba(99, 102, 241, 0.2);
+            border-color: var(--accent);
+            color: var(--text-primary);
+            transform: scale(1.05);
+        }
+
+        .lang-btn {
+            padding: 6px 16px;
+            border-radius: 50px;
+            font-size: 13px;
+            font-weight: 600;
+            letter-spacing: 0.5px;
+            color: var(--text-secondary);
+            border: 1px solid var(--border-nav);
+            background: var(--bg-nav);
+            cursor: pointer;
+            transition: var(--transition);
+        }
+
+        .lang-btn.active {
+            background: var(--accent);
+            color: #fff;
+            border-color: var(--accent);
+            box-shadow: 0 2px 12px rgba(99, 102, 241, 0.4);
+        }
+
+        .lang-btn:hover:not(.active) {
+            color: var(--text-primary);
+            border-color: var(--accent);
+        }
+
+        /* ═══════════════════════════════════════════
+           中间主内容
+           ═══════════════════════════════════════════ */
+        .hero-center {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 10;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            pointer-events: none;
+        }
+
+        .hero-center * {
+            pointer-events: auto;
+        }
+
+        .hero-badge {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 32px;
+            padding: 10px 28px;
+            background: var(--bg-badge);
+            border: 1px solid var(--border-badge);
+            border-radius: 100px;
+            backdrop-filter: blur(8px);
+            -webkit-backdrop-filter: blur(8px);
+            font-size: 14px;
+            color: var(--text-muted);
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            font-weight: 500;
+            animation: fadeUp 1s ease-out both 0.2s;
+            transition: background 0.4s, border 0.4s, color 0.4s;
+        }
+
+        .hero-badge .dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: #34d399;
+            box-shadow: 0 0 16px rgba(52, 211, 153, 0.5);
+            animation: pulse-dot 2s ease-in-out infinite;
+        }
+
+        @keyframes pulse-dot {
+            0%,
+            100% {
+                opacity: 1;
+                transform: scale(1);
+            }
+            50% {
+                opacity: 0.4;
+                transform: scale(0.8);
+            }
+        }
+
+        .hero-title {
+            font-size: clamp(48px, 10vw, 96px);
+            font-weight: 900;
+            line-height: 1.05;
+            text-align: center;
+            background: var(--gradient);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-size: 300% 300%;
+            animation: gradientShift 6s ease infinite;
+            letter-spacing: -2px;
+            margin-bottom: 20px;
+            text-shadow: 0 0 80px rgba(99, 102, 241, 0.15);
+        }
+
+        @keyframes gradientShift {
+            0%,
+            100% {
+                background-position: 0% 50%;
+            }
+            50% {
+                background-position: 100% 50%;
+            }
+        }
+
+        .hero-sub {
+            font-size: clamp(14px, 1.4vw, 18px);
+            color: var(--text-secondary);
+            font-weight: 300;
+            letter-spacing: 4px;
+            text-transform: uppercase;
+            margin-bottom: 48px;
+            animation: fadeUp 1s ease-out both 0.4s;
+            transition: color 0.4s;
+        }
+
+        .btn-enter {
+            display: inline-flex;
+            align-items: center;
+            gap: 16px;
+            padding: 18px 56px;
+            border-radius: 60px;
+            font-size: 18px;
+            font-weight: 700;
+            color: #fff;
+            background: var(--gradient-sm);
+            border: none;
+            cursor: pointer;
+            box-shadow: var(--btn-shadow);
+            transition: var(--transition);
+            text-decoration: none;
+            letter-spacing: 0.5px;
+            animation: fadeUp 1s ease-out both 0.6s;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .btn-enter::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            border-radius: 60px;
+            padding: 2px;
+            background: linear-gradient(135deg, rgba(255, 255, 255, 0.3), transparent, rgba(255, 255, 255, 0.1));
+            -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+            mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+            -webkit-mask-composite: xor;
+            mask-composite: exclude;
+            pointer-events: none;
+        }
+
+        .btn-enter:hover {
+            transform: translateY(-4px) scale(1.02);
+            box-shadow: var(--btn-shadow-hover);
+        }
+
+        .btn-enter:active {
+            transform: scale(0.96);
+        }
+
+        .btn-enter i {
+            font-size: 20px;
+            transition: transform 0.3s;
+        }
+
+        .btn-enter:hover i {
+            transform: translateX(6px) scale(1.1);
+        }
+
+        .hero-hint {
+            margin-top: 48px;
+            font-size: 12px;
+            color: var(--text-muted);
+            letter-spacing: 3px;
+            text-transform: uppercase;
+            animation: fadeUp 1s ease-out both 0.8s;
+            opacity: 0.5;
+            transition: opacity 0.4s, color 0.4s;
+        }
+
+        .hero-hint:hover {
+            opacity: 1;
+        }
+
+        @keyframes fadeUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* ═══════════════════════════════════════════
+           底部版权
+           ═══════════════════════════════════════════ */
+        .footer-bar {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            z-index: 100;
+            padding: 18px 48px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            background: var(--bg-footer);
+            backdrop-filter: blur(12px) saturate(1.2);
+            -webkit-backdrop-filter: blur(12px) saturate(1.2);
+            border-top: 1px solid var(--border-footer);
+            font-size: 13px;
+            color: var(--text-muted);
+            flex-wrap: wrap;
+            gap: 12px;
+            transition: background 0.4s, border 0.4s, color 0.4s;
+        }
+
+        .footer-bar .footer-links {
+            display: flex;
+            align-items: center;
+            gap: 24px;
+        }
+
+        .footer-bar a {
+            color: var(--text-muted);
+            text-decoration: none;
+            transition: color 0.3s;
+            font-weight: 400;
+            letter-spacing: 0.3px;
+        }
+
+        .footer-bar a:hover {
+            color: var(--text-primary);
+        }
+
+        .footer-bar .sep {
+            color: var(--text-muted);
+            opacity: 0.3;
+            font-size: 12px;
+        }
+
+        .footer-bar .social-icons {
+            display: flex;
+            gap: 16px;
+        }
+
+        .footer-bar .social-icons a {
+            font-size: 16px;
+            color: var(--text-muted);
+            transition: var(--transition);
+        }
+
+        .footer-bar .social-icons a:hover {
+            color: var(--accent);
+            transform: translateY(-2px);
+        }
+
+        /* ═══════════════════════════════════════════
+           RESPONSIVE
+           ═══════════════════════════════════════════ */
+        @media (max-width: 768px) {
+            .navbar {
+                padding: 0 20px;
+                height: 60px;
+            }
+            .nav-links {
+                gap: 18px;
+            }
+            .nav-links a {
+                font-size: 13px;
+            }
+            .nav-links .nav-cta {
+                padding: 6px 18px;
+                font-size: 12px;
+            }
+            .hero-title {
+                font-size: 40px;
+            }
+            .btn-enter {
+                padding: 16px 40px;
+                font-size: 16px;
+            }
+            .footer-bar {
+                padding: 14px 20px;
+                flex-direction: column;
+                align-items: center;
+                text-align: center;
+                font-size: 12px;
+            }
+            .footer-bar .footer-links {
+                flex-wrap: wrap;
+                justify-content: center;
+                gap: 12px;
+            }
+            .hero-badge {
+                font-size: 11px;
+                padding: 6px 18px;
+                margin-bottom: 20px;
+            }
+            .hero-sub {
+                font-size: 12px;
+                letter-spacing: 2px;
+                margin-bottom: 32px;
+            }
+            .hero-hint {
+                font-size: 10px;
+                margin-top: 32px;
+            }
+            .nav-right {
+                gap: 12px;
+            }
+            .ctrl-btn {
+                width: 34px;
+                height: 34px;
+                font-size: 16px;
+            }
+            .lang-btn {
+                font-size: 12px;
+                padding: 4px 12px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .navbar {
+                padding: 0 14px;
+                height: 54px;
+            }
+            .nav-brand {
+                font-size: 16px;
+                gap: 8px;
+            }
+            .nav-brand .logo-icon {
+                width: 30px;
+                height: 30px;
+                font-size: 14px;
+                border-radius: 8px;
+            }
+            .nav-links a {
+                font-size: 12px;
+            }
+            .nav-links .nav-cta {
+                padding: 4px 14px;
+                font-size: 11px;
+            }
+            .hero-title {
+                font-size: 32px;
+                letter-spacing: -1px;
+            }
+            .btn-enter {
+                padding: 14px 32px;
+                font-size: 14px;
+                gap: 10px;
+            }
+            .btn-enter i {
+                font-size: 16px;
+            }
+            .footer-bar {
+                padding: 12px 14px;
+                font-size: 11px;
+            }
+            .footer-bar .social-icons a {
+                font-size: 14px;
+            }
+            .nav-right {
+                gap: 8px;
+            }
+            .ctrl-btn {
+                width: 30px;
+                height: 30px;
+                font-size: 14px;
+            }
+            .lang-btn {
+                font-size: 11px;
+                padding: 3px 10px;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- ====== 粒子画布 ====== -->
+    <canvas id="particles-canvas"></canvas>
+    <!-- ====== 地球画布 ====== -->
+    <canvas id="globe-canvas"></canvas>
+
+    <!-- ============================================================ -->
+    <!-- 顶部导航 -->
+    <!-- ============================================================ -->
+    <nav class="navbar" id="navbar">
+        <a href="#" class="nav-brand">
+            <div class="logo-icon"><i class="fas fa-crown"></i></div>
+            <span>ORG.OOO</span>
+        </a>
+        <div class="nav-right">
+            <div class="nav-links">
+                <a href="#" data-zh="首页" data-en="Home">首页</a>
+                <a href="#" data-zh="服务" data-en="Services">服务</a>
+                <a href="#" data-zh="案例" data-en="Cases">案例</a>
+                <a href="#" class="nav-cta" data-zh="联系" data-en="Contact">联系</a>
+            </div>
+            <!-- 语言切换 -->
+            <button class="lang-btn active" id="langToggle">中文</button>
+            <!-- 主题切换 -->
+            <button class="ctrl-btn" id="themeToggle" title="切换主题">
+                <i class="fas fa-moon" id="themeIcon"></i>
+            </button>
+        </div>
+    </nav>
+
+    <!-- ============================================================ -->
+    <!-- 中间内容 -->
+    <!-- ============================================================ -->
+    <div class="hero-center">
+        <div class="hero-badge">
+            <span class="dot"></span>
+            <span data-zh="✦ 品牌升级中" data-en="✦ Brand Upgrading">✦ 品牌升级中</span>
+        </div>
+
+        <h1 class="hero-title" data-zh="进入网站" data-en="Enter Site">进入网站</h1>
+        <p class="hero-sub" data-zh="ORG.OOO — 全栈 · AI · 域名" data-en="ORG.OOO — Fullstack · AI · Domain">ORG.OOO — 全栈 · AI · 域名</p>
+
+        <!-- 按钮只保留 span 上的 data 属性 -->
+        <a href="#" class="btn-enter">
+            <span data-zh="立即探索" data-en="Explore Now">立即探索</span>
+            <i class="fas fa-arrow-right"></i>
+        </a>
+
+        <div class="hero-hint" data-zh="滚动探索 · 沉浸体验" data-en="Scroll · Immersive">
+            <i class="fas fa-mouse"></i> 滚动探索 · 沉浸体验
+        </div>
+    </div>
+
+    <!-- ============================================================ -->
+    <!-- 底部版权 -->
+    <!-- ============================================================ -->
+    <footer class="footer-bar">
+        <span data-zh="© 2026 ORG.OOO — 保留所有权利" data-en="© 2026 ORG.OOO — All Rights Reserved">© 2026 ORG.OOO — 保留所有权利</span>
+        <div class="footer-links">
+            <a href="#" data-zh="隐私政策" data-en="Privacy">隐私政策</a>
+            <span class="sep">|</span>
+            <a href="#" data-zh="服务条款" data-en="Terms">服务条款</a>
+            <span class="sep">|</span>
+            <div class="social-icons">
+                <a href="#" title="QQ"><i class="fab fa-qq"></i></a>
+                <a href="#" title="微信"><i class="fab fa-weixin"></i></a>
+                <a href="#" title="邮箱"><i class="fas fa-envelope"></i></a>
+                <a href="#" title="GitHub"><i class="fab fa-github"></i></a>
+            </div>
+        </div>
+    </footer>
+
+    <!-- ============================================================ -->
+    <!-- 脚本 -->
+    <!-- ============================================================ -->
+    <script>
+        // ── 1. 动态粒子系统 ──
+        (function() {
+            const canvas = document.getElementById('particles-canvas');
+            const ctx = canvas.getContext('2d');
+            let W, H;
+
+            function resize() {
+                W = canvas.width = window.innerWidth;
+                H = canvas.height = window.innerHeight;
+            }
+            resize();
+            window.addEventListener('resize', resize);
+
+            const colors = [
+                'rgba(99,102,241,', 'rgba(168,85,247,',
+                'rgba(236,72,153,', 'rgba(52,211,153,',
+                'rgba(56,189,248,'
+            ];
+
+            const particles = [];
+            for (let i = 0; i < 80; i++) {
+                particles.push({
+                    x: Math.random() * W,
+                    y: Math.random() * H,
+                    vx: (Math.random() - 0.5) * 0.6,
+                    vy: (Math.random() - 0.5) * 0.6,
+                    size: Math.random() * 6 + 3,
+                    alpha: Math.random() * 0.35 + 0.1,
+                    color: colors[Math.floor(Math.random() * colors.length)]
+                });
+            }
+
+            function animateParticles() {
+                ctx.clearRect(0, 0, W, H);
+                particles.forEach(p => {
+                    p.x += p.vx;
+                    p.y += p.vy;
+                    if (p.x < -20) p.x = W + 20;
+                    if (p.x > W + 20) p.x = -20;
+                    if (p.y < -20) p.y = H + 20;
+                    if (p.y > H + 20) p.y = -20;
+                    ctx.beginPath();
+                    ctx.arc(p.x, p.y, p.size, 0, Math.PI * 2);
+                    ctx.fillStyle = p.color + p.alpha + ')';
+                    ctx.fill();
+                });
+                requestAnimationFrame(animateParticles);
+            }
+            animateParticles();
+        })();
+
+        // ── 2. 3D 地球 ──
+        (function() {
+            const canvas = document.getElementById('globe-canvas');
+            const ctx = canvas.getContext('2d');
+            let W, H, cx, cy, R;
+            let rotation = 0;
+
+            function resize() {
+                W = canvas.width = window.innerWidth;
+                H = canvas.height = window.innerHeight;
+                cx = W / 2;
+                cy = H / 2;
+                R = Math.min(W, H) * 0.38;
+            }
+            resize();
+            window.addEventListener('resize', resize);
+
+            const stars = [];
+            for (let i = 0; i < 150; i++) {
+                stars.push({
+                    x: Math.random() * 2 - 1,
+                    y: Math.random() * 2 - 1,
+                    r: Math.random() * 1.8 + 0.2,
+                    a: Math.random() * 0.7 + 0.2
+                });
+            }
+
+            function globePos(lat, lon) {
+                const x = R * Math.sin(lat) * Math.cos(lon);
+                const y = R * Math.cos(lat);
+                const z = R * Math.sin(lat) * Math.sin(lon);
+                return { x: cx + x, y: cy - y, z: z };
+            }
+
+            function drawGlobe(t) {
+                ctx.clearRect(0, 0, W, H);
+
+                stars.forEach(s => {
+                    const sx = (s.x + 1) / 2 * W;
+                    const sy = (s.y + 1) / 2 * H;
+                    ctx.beginPath();
+                    ctx.arc(sx, sy, s.r, 0, Math.PI * 2);
+                    ctx.fillStyle = `rgba(255,255,255,${s.a})`;
+                    ctx.fill();
+                });
+
+                const grd = ctx.createRadialGradient(cx, cy, 0, cx, cy, W * 0.4);
+                grd.addColorStop(0, 'rgba(99,102,241,0.07)');
+                grd.addColorStop(1, 'transparent');
+                ctx.fillStyle = grd;
+                ctx.fillRect(0, 0, W, H);
+
+                ctx.save();
+                ctx.beginPath();
+                ctx.arc(cx, cy, R, 0, Math.PI * 2);
+                ctx.clip();
+
+                const sgrd = ctx.createRadialGradient(cx - R * 0.3, cy - R * 0.3, 0, cx, cy, R);
+                sgrd.addColorStop(0, 'rgba(130,120,255,0.15)');
+                sgrd.addColorStop(0.5, 'rgba(99,102,241,0.08)');
+                sgrd.addColorStop(1, 'rgba(60,50,180,0.02)');
+                ctx.fillStyle = sgrd;
+                ctx.beginPath();
+                ctx.arc(cx, cy, R, 0, Math.PI * 2);
+                ctx.fill();
+
+                ctx.strokeStyle = 'rgba(130,120,255,0.4)';
+                ctx.lineWidth = 1.2;
+                for (let i = 0; i < 12; i++) {
+                    const lon = (i / 12) * Math.PI * 2 + rotation;
+                    ctx.beginPath();
+                    let started = false;
+                    for (let j = 0; j <= 36; j++) {
+                        const lat = (j / 36) * Math.PI;
+                        const p = globePos(lat, lon);
+                        if (p.z >= 0) {
+                            if (!started) { ctx.moveTo(p.x, p.y);
+                                started = true; } else ctx.lineTo(p.x, p.y);
+                        } else { started = false; }
+                    }
+                    ctx.stroke();
+                }
+
+                for (let i = 1; i < 7; i++) {
+                    const lat = (i / 8) * Math.PI;
+                    ctx.beginPath();
+                    let started = false;
+                    for (let j = 0; j <= 36; j++) {
+                        const lon = (j / 36) * Math.PI * 2 + rotation;
+                        const p = globePos(lat, lon);
+                        if (p.z >= 0) {
+                            if (!started) { ctx.moveTo(p.x, p.y);
+                                started = true; } else ctx.lineTo(p.x, p.y);
+                        } else { started = false; }
+                    }
+                    ctx.stroke();
+                }
+
+                for (let i = 1; i < 7; i++) {
+                    const lat = (i / 8) * Math.PI;
+                    for (let k = 0; k < 12; k++) {
+                        const lon = (k / 12) * Math.PI * 2 + rotation;
+                        const p = globePos(lat, lon);
+                        if (p.z >= 0) {
+                            ctx.beginPath();
+                            ctx.arc(p.x, p.y, 7, 0, Math.PI * 2);
+                            ctx.fillStyle = 'rgba(130,120,255,0.18)';
+                            ctx.fill();
+                            ctx.beginPath();
+                            ctx.arc(p.x, p.y, 4, 0, Math.PI * 2);
+                            ctx.fillStyle = 'rgba(160,150,255,0.4)';
+                            ctx.fill();
+                            ctx.beginPath();
+                            ctx.arc(p.x, p.y, 2, 0, Math.PI * 2);
+                            ctx.fillStyle = 'rgba(220,210,255,0.9)';
+                            ctx.fill();
+                        }
+                    }
+                }
+
+                ctx.restore();
+
+                ctx.beginPath();
+                ctx.arc(cx, cy, R, 0, Math.PI * 2);
+                ctx.strokeStyle = 'rgba(130,120,255,0.25)';
+                ctx.lineWidth = 1.5;
+                ctx.stroke();
+            }
+
+            function animateGlobe(t) {
+                drawGlobe(t);
+                rotation += 0.006;
+                requestAnimationFrame(animateGlobe);
+            }
+            animateGlobe(0);
+        })();
+
+        // ── 3. 导航滚动效果 ──
+        (function() {
+            const nav = document.getElementById('navbar');
+            window.addEventListener('scroll', () => {
+                nav.classList.toggle('scrolled', window.scrollY > 60);
+            });
+        })();
+
+        // ── 4. 主题切换（夜间 / 白天 / 跟随系统） ──
+        (function() {
+            const themeToggle = document.getElementById('themeToggle');
+            const themeIcon = document.getElementById('themeIcon');
+            const body = document.body;
+
+            let currentTheme = localStorage.getItem('theme') || 'system';
+
+            function applyTheme(theme) {
+                currentTheme = theme;
+                localStorage.setItem('theme', theme);
+
+                body.classList.remove('theme-light', 'theme-system');
+
+                if (theme === 'light') {
+                    body.classList.add('theme-light');
+                    themeIcon.className = 'fas fa-sun';
+                } else if (theme === 'dark') {
+                    themeIcon.className = 'fas fa-moon';
+                } else if (theme === 'system') {
+                    body.classList.add('theme-system');
+                    const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+                    if (!prefersDark) {
+                        body.classList.add('theme-light');
+                    }
+                    themeIcon.className = 'fas fa-desktop';
+                }
+            }
+
+            const mediaQuery = window.matchMedia('(prefers-color-scheme: dark)');
+            mediaQuery.addEventListener('change', () => {
+                if (currentTheme === 'system') {
+                    applyTheme('system');
+                }
+            });
+
+            themeToggle.addEventListener('click', () => {
+                let next;
+                if (currentTheme === 'dark') next = 'light';
+                else if (currentTheme === 'light') next = 'system';
+                else if (currentTheme === 'system') next = 'dark';
+                applyTheme(next);
+            });
+
+            applyTheme(currentTheme);
+        })();
+
+        // ── 5. 语言切换（中 / 英） ──
+        (function() {
+            const langToggle = document.getElementById('langToggle');
+            let currentLang = localStorage.getItem('lang') || 'zh';
+
+            function setLang(lang) {
+                currentLang = lang;
+                localStorage.setItem('lang', lang);
+                langToggle.textContent = lang === 'zh' ? '中文' : 'EN';
+                langToggle.classList.toggle('active', lang === 'zh');
+
+                // 更新所有带 data-zh/data-en 的纯文本元素
+                document.querySelectorAll('[data-zh][data-en]').forEach(el => {
+                    const text = el.getAttribute('data-' + lang);
+                    if (text) {
+                        el.textContent = text;
+                    }
+                });
+            }
+
+            langToggle.addEventListener('click', () => {
+                const next = currentLang === 'zh' ? 'en' : 'zh';
+                setLang(next);
+            });
+
+            setLang(currentLang);
+        })();
+
+        // ── 6. 点击"进入网站"按钮演示 ──
+        document.querySelector('.btn-enter')?.addEventListener('click', function(e) {
+            e.preventDefault();
+            const msg = localStorage.getItem('lang') === 'zh' ?
+                '✨ 欢迎进入 ORG.OOO 主站！\n（此处可替换为实际跳转链接）' :
+                '✨ Welcome to ORG.OOO!\n(Replace with your actual link)';
+            alert(msg);
+            // window.location.href = 'https://org.ooo';
+        });
+    </script>
+</body>
+</html>
