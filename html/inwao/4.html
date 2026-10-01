@@ -1,0 +1,294 @@
+<!DOCTYPE html>
+<html lang='en'>
+<head>
+    <meta http-equiv='Content-Type' content='text/html; charset=UTF-8'>
+    <meta name='viewport' content='width=device-width, initial-scale=1, shrink-to-fit=no'>
+    <title>淡蓝灰渐变 网站正在建设中.</title>
+    <style>
+        @import url(https://fonts.googleapis.com/css?family=Montserrat);
+        @import url(https://fonts.googleapis.com/css?family=Open+Sans:400,700);
+
+        html, body {
+            height: 100%;
+        }
+
+        body {
+            overflow: hidden;
+            /* ===== 方案4：淡蓝灰渐变（极简但不太黑） ===== */
+            background-color: #14161c;
+            background-image: linear-gradient(135deg, #14161c 0%, #232838 50%, #181b24 100%);
+            background-repeat: no-repeat;
+            background-attachment: fixed;
+            background-size: cover;
+        }
+
+        h1 {
+            margin: 0;
+            font-family: 'Montserrat', sans-serif;
+            font-size: 4em;
+            color: #333;
+            text-shadow: 0 2px 1px rgba(0, 0, 0, 0.6), 0 0 2px rgba(0, 0, 0, 0.7);
+            word-spacing: 16px;
+        }
+
+        p {
+            font-family: 'Open Sans', sans-serif;
+            font-size: 1.4em;
+            font-weight: bold;
+            color: #222;
+            text-shadow: 0 0 40px #FFFFFF, 0 0 30px #FFFFFF, 0 0 20px #FFFFFF;
+        }
+
+        .container {
+            position: absolute;
+            top: 0;
+            bottom: 0;
+            width: 100%;
+            background: transparent;
+            background-size: cover;
+        }
+
+        .wrapper {
+            width: 100%;
+            min-height: 100%;
+            height: auto;
+            display: table;
+        }
+
+        .content {
+            display: table-cell;
+            vertical-align: middle;
+        }
+
+        .item {
+            width: auto;
+            height: auto;
+            margin: 0 auto;
+            text-align: center;
+            padding: 8px;
+        }
+
+        canvas {
+            position: absolute;
+            z-index: 0;
+            left: 0px;
+            top: 0px;
+            width: 100%;
+        }
+
+        @keyframes gradientMove {
+            0%   { background-position: 0% 50%; }
+            100% { background-position: 200% 50%; }
+        }
+
+        .copyright {
+            position: fixed;
+            left: 0;
+            right: 0;
+            bottom: 14px;
+            z-index: 5;
+            text-align: center;
+            font-family: 'Open Sans', sans-serif;
+            font-size: 0.85em;
+            color: #aaa;
+            letter-spacing: 1px;
+            opacity: 0.75;
+            pointer-events: none;
+        }
+
+        @media only screen and (min-width: 800px) {
+            h1 { font-size: 6em; }
+            p { font-size: 1.6em; }
+        }
+
+        @media only screen and (max-width: 320px) {
+            h1 { font-size: 2em; }
+            p { font-size: 1.2em; }
+        }
+    </style>
+</head>
+
+<body><canvas id='background' width='1280' height='642'></canvas>
+    <div class='container'>
+        <div class='wrapper'>
+            <div class='content'>
+                <div class='item'>
+                    <h1>即将上线</h1>
+                    <p>网站正在建设中...</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class='copyright'>&copy; 2026 你的公司名称 版权所有</div>
+
+    <script>
+        const CONFIG = {
+            particleCount: 100,
+            trailLength: 45,
+            sizeMin: 4,
+            sizeMax: 10,
+            mouseInfluence: 10,
+            colorMode: 'gradient',
+            saturation: 100,
+            lightness: 60,
+            breathingSpeed: 20,
+            breathingSpread: 3,
+            originalColors: ['#ccc', '#00174a', '#3c8dbc'],
+            enableGradientText: true,
+            titleGradient: (function () {
+                const h1 = Math.floor(Math.random() * 360);
+                const h2 = (h1 + 60 + Math.floor(Math.random() * 120)) % 360;
+                const h3 = (h2 + 60 + Math.floor(Math.random() * 120)) % 360;
+                const h4 = (h3 + 60 + Math.floor(Math.random() * 120)) % 360;
+                return 'linear-gradient(90deg, hsl(' + h1 + ',100%,65%), hsl(' + h2 + ',100%,65%), hsl(' + h3 + ',100%,65%), hsl(' + h4 + ',100%,65%))';
+            })(),
+            subtitleGradient: (function () {
+                const h1 = Math.floor(Math.random() * 360);
+                const h2 = (h1 + 60 + Math.floor(Math.random() * 120)) % 360;
+                const h3 = (h2 + 60 + Math.floor(Math.random() * 120)) % 360;
+                const h4 = (h3 + 60 + Math.floor(Math.random() * 120)) % 360;
+                return 'linear-gradient(90deg, hsl(' + h1 + ',100%,65%), hsl(' + h2 + ',100%,65%), hsl(' + h3 + ',100%,65%), hsl(' + h4 + ',100%,65%))';
+            })(),
+        };
+
+        if (CONFIG.enableGradientText) {
+            const h1El = document.querySelector('h1');
+            const pEl = document.querySelector('p');
+            h1El.style.background = CONFIG.titleGradient;
+            h1El.style.backgroundSize = '200% 200%';
+            h1El.style.webkitBackgroundClip = 'text';
+            h1El.style.backgroundClip = 'text';
+            h1El.style.color = 'transparent';
+            h1El.style.textShadow = 'none';
+            h1El.style.animation = 'gradientMove 4s linear infinite';
+            pEl.style.background = CONFIG.subtitleGradient;
+            pEl.style.backgroundSize = '200% 200%';
+            pEl.style.webkitBackgroundClip = 'text';
+            pEl.style.backgroundClip = 'text';
+            pEl.style.color = 'transparent';
+            pEl.style.textShadow = 'none';
+            pEl.style.animation = 'gradientMove 4s linear infinite';
+        }
+
+        function getParticleColor(index, total) {
+            switch (CONFIG.colorMode) {
+                case 'original':
+                    return CONFIG.originalColors[Math.floor(Math.random() * CONFIG.originalColors.length)];
+                case 'rainbow':
+                    return 'hsl(' + Math.floor(Math.random() * 360) + ', ' + CONFIG.saturation + '%, ' + CONFIG.lightness + '%)';
+                case 'gradient':
+                    return 'hsl(' + (index / total * 360) + ', ' + CONFIG.saturation + '%, ' + CONFIG.lightness + '%)';
+                case 'breathing':
+                    return 'hsl(' + (index * CONFIG.breathingSpread % 360) + ', ' + CONFIG.saturation + '%, ' + CONFIG.lightness + '%)';
+                default:
+                    return '#ccc';
+            }
+        }
+
+        const particles = [];
+        for (let i = 0; i < CONFIG.particleCount; i++) {
+            particles.push({
+                x: Math.random() > 0.5 ? 0 : window.innerWidth,
+                y: window.innerHeight / 2,
+                vx: Math.random() * 2 - 1,
+                vy: Math.random() * 2 - 1,
+                history: [],
+                size: CONFIG.sizeMin + Math.random() * (CONFIG.sizeMax - CONFIG.sizeMin),
+                color: getParticleColor(i, CONFIG.particleCount)
+            });
+        }
+
+        const mouse = { x: window.innerWidth / 2, y: window.innerHeight / 2 };
+        const canvas = document.getElementById('background');
+        if (canvas && canvas.getContext) {
+            var context = canvas.getContext('2d');
+            Initialize();
+        }
+
+        function Initialize() {
+            canvas.addEventListener('mousemove', MouseMove, false);
+            window.addEventListener('resize', ResizeCanvas, false);
+            TimeUpdate();
+            context.beginPath();
+            ResizeCanvas();
+        }
+
+        function TimeUpdate(e) {
+            context.clearRect(0, 0, window.innerWidth, window.innerHeight);
+
+            for (let i = 0; i < particles.length; i++) {
+                particles[i].x += particles[i].vx;
+                particles[i].y += particles[i].vy;
+
+                if (particles[i].x > window.innerWidth) {
+                    particles[i].vx = -1 - Math.random();
+                } else if (particles[i].x < 0) {
+                    particles[i].vx = 1 + Math.random();
+                } else {
+                    particles[i].vx *= 1 + Math.random() * 0.005;
+                }
+
+                if (particles[i].y > window.innerHeight) {
+                    particles[i].vy = -1 - Math.random();
+                } else if (particles[i].y < 0) {
+                    particles[i].vy = 1 + Math.random();
+                } else {
+                    particles[i].vy *= 1 + Math.random() * 0.005;
+                }
+
+                let particleColor = particles[i].color;
+                if (CONFIG.colorMode === 'breathing') {
+                    const hue = (Date.now() / CONFIG.breathingSpeed + i * CONFIG.breathingSpread) % 360;
+                    particleColor = 'hsl(' + hue + ', ' + CONFIG.saturation + '%, ' + CONFIG.lightness + '%)';
+                }
+
+                context.strokeStyle = particleColor;
+                context.beginPath();
+                for (var j = 0; j < particles[i].history.length; j++) {
+                    context.lineTo(particles[i].history[j].x, particles[i].history[j].y);
+                }
+                context.stroke();
+
+                particles[i].history.push({ x: particles[i].x, y: particles[i].y });
+                if (particles[i].history.length > CONFIG.trailLength) {
+                    particles[i].history.shift();
+                }
+
+                for (var j = 0; j < particles[i].history.length; j++) {
+                    particles[i].history[j].x += 0.01 * (mouse.x - particles[i].history[j].x) / (CONFIG.trailLength / j);
+                    particles[i].history[j].y += 0.01 * (mouse.y - particles[i].history[j].y) / (CONFIG.trailLength / j);
+                }
+
+                let distanceFactor = DistanceBetween(mouse, particles[i]);
+                distanceFactor = Math.pow(Math.max(Math.min(CONFIG.mouseInfluence - distanceFactor / 10, CONFIG.mouseInfluence), 2), 0.5);
+
+                context.fillStyle = particleColor;
+                context.beginPath();
+                context.arc(particles[i].x, particles[i].y, particles[i].size * distanceFactor, 0, Math.PI * 2, true);
+                context.closePath();
+                context.fill();
+            }
+
+            requestAnimationFrame(TimeUpdate);
+        }
+
+        function MouseMove(e) {
+            mouse.x = e.layerX;
+            mouse.y = e.layerY;
+        }
+
+        function ResizeCanvas(e) {
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight;
+        }
+
+        function DistanceBetween(p1, p2) {
+            const dx = p2.x - p1.x;
+            const dy = p2.y - p1.y;
+            return Math.sqrt(dx * dx + dy * dy);
+        }
+    </script>
+
+</body>
+</html>
