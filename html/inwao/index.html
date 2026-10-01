@@ -11,6 +11,32 @@
 
         body {
             overflow: hidden;
+
+            /* =========================================================
+             *  背景色方案（直接替换下面这一行即可）
+             * =========================================================
+             *
+             *  方案1：深色纯色（推荐，彩色粒子最亮眼）
+             *  background: #0f1220;
+             *
+             *  方案2：深蓝科技风渐变
+             *  background: linear-gradient(135deg, #0b1e3a, #122b4a, #0a1628);
+             *
+             *  方案3：暗紫渐变（潮流/设计感）
+             *  background: linear-gradient(135deg, #1a0b2e, #2d1b4e, #0f0a1f);
+             *
+             *  方案4：纯黑（极简，粒子像霓虹）
+             *  background: #000;
+             *
+             *  方案5：深色 + 径向光晕（层次感更强）
+             *  background:
+             *      radial-gradient(circle at 50% 30%, rgba(80, 120, 255, 0.18), transparent 60%),
+             *      linear-gradient(135deg, #0f1220, #1a1f3a);
+             *
+             * ========================================================= */
+
+            /* 当前使用：方案1 深色纯色 */
+            background: #0f1220;
         }
 
         h1 {
@@ -37,7 +63,8 @@
             top: 0;
             bottom: 0;
             width: 100%;
-            background: url('');
+            /* ===== 保持透明，露出 canvas 粒子 ===== */
+            background: transparent;
             background-size: cover;
         }
 
@@ -95,7 +122,8 @@
             text-align: center;
             font-family: 'Open Sans', sans-serif;
             font-size: 0.85em;
-            color: #555;
+            /* ===== 深色背景时改成浅灰 ===== */
+            color: #aaa;
             letter-spacing: 1px;
             opacity: 0.75;
             pointer-events: none;
@@ -180,7 +208,7 @@
 
             /* -------- 背景与文字 --------
              * 若想启用彩色渐变背景，把下面的注释打开即可。
-             * 也可以直接改 CSS 里的 .container background。
+             * 也可以直接改 CSS 里的 body background。
              */
             enableGradientBackground: false,
             backgroundGradient: 'linear-gradient(135deg, #1a2a6c, #b21f1f, #fdbb2d)',
@@ -213,7 +241,7 @@
 
         // ---------- 根据 CONFIG 生成背景渐变（可选） ----------
         if (CONFIG.enableGradientBackground) {
-            document.querySelector('.container').style.background = CONFIG.backgroundGradient;
+            document.body.style.background = CONFIG.backgroundGradient;
         }
 
         // ---------- 根据 CONFIG 生成渐变文字（可选，带流动动画） ----------
