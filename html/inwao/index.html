@@ -36,6 +36,11 @@
             top: 0;
             bottom: 0;
             width: 100%;
+            /* ===== 可修改：页面背景（原为空 url） =====
+               留空则透明，露出 canvas 粒子背景。
+               想用纯色渐变可改成：
+               background: linear-gradient(135deg, #1a2a6c, #b21f1f, #fdbb2d);
+            */
             background: url('');
             background-size: cover;
         }
@@ -66,6 +71,7 @@
             left: 0px;
             top: 0px;
             width: 100%;
+            touch-action: none;   /* 移动端：阻止触摸时页面滚动/缩放 */
         }
 
         .background {
@@ -76,12 +82,6 @@
             align-content: center;
             justify-content: center;
             font-family: 'Text Me One', sans-serif;
-        }
-
-        /* 渐变流动动画 */
-        @keyframes gradientMove {
-            0%   { background-position: 0% 50%; }
-            100% { background-position: 200% 50%; }
         }
 
         @media only screen and (min-width: 800px) {
@@ -112,8 +112,8 @@
             <div class='content'>
                 <div class='item'>
                     <!-- Place your content here to have it be centered vertically and horizontally  -->
-                    <h1>即将上线</h1>
-                    <p>网站正在建设中...</p>
+                    <h1 id="title">即将上线</h1>
+                    <p id="subtitle">网站正在建设中...</p>
                 </div>
             </div>
         </div>
@@ -124,7 +124,7 @@
          *  CONFIG —— 所有可修改项集中在这里，后期只改这一段即可
          * ========================================================= */
         const CONFIG = {
-            // 粒子数量
+            // 粒子数量（会自动根据移动端降级，见下方 isTouch）
             particleCount: 100,
 
             // 拖尾长度（历史轨迹点数，越大尾巴越长）
@@ -134,10 +134,10 @@
             sizeMin: 4,
             sizeMax: 10,
 
-            // 鼠标影响范围系数（越大，鼠标附近粒子放大越明显）
+            // 鼠标/手指影响范围系数（越大，指针附近粒子放大越明显）
             mouseInfluence: 10,
 
-            /* -------- 颜色方案 --------
+            /* -------- 粒子颜色方案 --------
              * 可选值：
              *   'original'  —— 原版灰蓝随机色
              *   'rainbow'   —— 每个粒子随机彩虹色
@@ -158,47 +158,52 @@
             // original 模式下使用的颜色列表
             originalColors: ['#ccc', '#00174a', '#3c8dbc'],
 
-            /* -------- 背景与文字 --------
-             * 若想启用彩色渐变背景，把下面的注释打开即可。
-             * 也可以直接改 CSS 里的 .container background。
-             */
+            /* =========================================================
+             *  文字颜色 —— 标题和副标题各用一种颜色
+             * ========================================================= */
+
+            // 标题「即将上线」的颜色
+            // 可以是纯色：'#e74c3c'
+            // 也可以是渐变：'linear-gradient(90deg, #ff6b6b, #feca57)'
+            titleColor: '#e74c3c',
+
+            // 副标题「网站正在建设中...」的颜色
+            subtitleColor: '#2980b9',
+
+            // 是否给标题/副标题启用渐变文字
+            // 如果 titleColor / subtitleColor 写的是渐变，这里必须为 true
+            enableGradientText: false,
+
+            /* -------- 背景渐变（可选） -------- */
             enableGradientBackground: false,
             backgroundGradient: 'linear-gradient(135deg, #1a2a6c, #b21f1f, #fdbb2d)',
-
-            /* -------- 渐变文字 --------
-             * 把标题和副标题变成彩色渐变文字，并让渐变流动。
-             */
-            enableGradientText: true,
-
-            // 每次刷新页面随机生成一组渐变彩色
-            textGradient: (function () {
-                const h1 = Math.floor(Math.random() * 360);
-                const h2 = (h1 + 60 + Math.floor(Math.random() * 120)) % 360;
-                const h3 = (h2 + 60 + Math.floor(Math.random() * 120)) % 360;
-                const h4 = (h3 + 60 + Math.floor(Math.random() * 120)) % 360;
-                return 'linear-gradient(90deg, hsl(' + h1 + ',100%,65%), hsl(' + h2 + ',100%,65%), hsl(' + h3 + ',100%,65%), hsl(' + h4 + ',100%,65%))';
-            })(),
         };
         /* ===================== CONFIG 结束 ===================== */
 
 
-        // ---------- 根据 CONFIG 生成背景渐变（可选） ----------
+        // ---------- 背景渐变（可选） ----------
         if (CONFIG.enableGradientBackground) {
             document.querySelector('.container').style.background = CONFIG.backgroundGradient;
         }
 
-        // ---------- 根据 CONFIG 生成渐变文字（可选，带流动动画） ----------
-        if (CONFIG.enableGradientText) {
-            [document.querySelector('h1'), document.querySelector('p')].forEach(function (el) {
-                el.style.background = CONFIG.textGradient;
-                el.style.backgroundSize = '200% 200%';
+        // ---------- 文字颜色应用 ----------
+        const titleEl = document.getElementById('title');
+        const subtitleEl = document.getElementById('subtitle');
+
+        function applyTextColor(el, value) {
+            if (CONFIG.enableGradientText && value.indexOf('gradient') !== -1) {
+                el.style.background = value;
                 el.style.webkitBackgroundClip = 'text';
                 el.style.backgroundClip = 'text';
                 el.style.color = 'transparent';
-                el.style.textShadow = 'none'; // 渐变文字去掉阴影更干净
-                el.style.animation = 'gradientMove 4s linear infinite';
-            });
+                el.style.textShadow = 'none';
+            } else {
+                el.style.color = value;
+            }
         }
+        applyTextColor(titleEl, CONFIG.titleColor);
+        applyTextColor(subtitleEl, CONFIG.subtitleColor);
+
 
         // ---------- 取色函数 ----------
         function getParticleColor(index, total) {
@@ -215,7 +220,6 @@
                         CONFIG.saturation + '%, ' + CONFIG.lightness + '%)';
 
                 case 'breathing':
-                    // 初始色相，实际在动画中会随时间变化
                     return 'hsl(' + (index * CONFIG.breathingSpread % 360) + ', ' +
                         CONFIG.saturation + '%, ' + CONFIG.lightness + '%)';
 
@@ -224,9 +228,16 @@
             }
         }
 
+        // ---------- 移动端自动降级 ----------
+        const isTouch = window.matchMedia('(pointer: coarse)').matches
+            || window.innerWidth < 768;
+
+        const particleCount = isTouch ? Math.round(CONFIG.particleCount * 0.4) : CONFIG.particleCount;
+        const trailLength = isTouch ? Math.round(CONFIG.trailLength * 0.45) : CONFIG.trailLength;
+
         // ---------- 初始化粒子 ----------
         const particles = [];
-        for (let i = 0; i < CONFIG.particleCount; i++) {
+        for (let i = 0; i < particleCount; i++) {
             particles.push({
                 x: Math.random() > 0.5 ? 0 : window.innerWidth,
                 y: window.innerHeight / 2,
@@ -234,7 +245,7 @@
                 vy: Math.random() * 2 - 1,
                 history: [],
                 size: CONFIG.sizeMin + Math.random() * (CONFIG.sizeMax - CONFIG.sizeMin),
-                color: getParticleColor(i, CONFIG.particleCount)
+                color: getParticleColor(i, particleCount)
             });
         }
 
@@ -250,6 +261,9 @@
 
         function Initialize() {
             canvas.addEventListener('mousemove', MouseMove, false);
+            // 移动端触摸支持
+            canvas.addEventListener('touchstart', TouchMove, { passive: false });
+            canvas.addEventListener('touchmove', TouchMove, { passive: false });
             window.addEventListener('resize', ResizeCanvas, false);
             TimeUpdate();
             context.beginPath();
@@ -299,17 +313,17 @@
                     x: particles[i].x,
                     y: particles[i].y
                 });
-                if (particles[i].history.length > CONFIG.trailLength) {
+                if (particles[i].history.length > trailLength) {
                     particles[i].history.shift();
                 }
 
-                // 轨迹向鼠标方向偏移
+                // 轨迹向指针方向偏移
                 for (var j = 0; j < particles[i].history.length; j++) {
-                    particles[i].history[j].x += 0.01 * (mouse.x - particles[i].history[j].x) / (CONFIG.trailLength / j);
-                    particles[i].history[j].y += 0.01 * (mouse.y - particles[i].history[j].y) / (CONFIG.trailLength / j);
+                    particles[i].history[j].x += 0.01 * (mouse.x - particles[i].history[j].x) / (trailLength / j);
+                    particles[i].history[j].y += 0.01 * (mouse.y - particles[i].history[j].y) / (trailLength / j);
                 }
 
-                // 鼠标距离影响圆点大小
+                // 指针距离影响圆点大小
                 let distanceFactor = DistanceBetween(mouse, particles[i]);
                 distanceFactor = Math.pow(Math.max(Math.min(CONFIG.mouseInfluence - distanceFactor / 10, CONFIG.mouseInfluence), 2), 0.5);
 
@@ -326,6 +340,16 @@
         function MouseMove(e) {
             mouse.x = e.layerX;
             mouse.y = e.layerY;
+        }
+
+        // 移动端触摸：用 clientX/clientY 减去 canvas 位置，兼容性更好
+        function TouchMove(e) {
+            e.preventDefault();
+            const rect = canvas.getBoundingClientRect();
+            const t = e.touches[0];
+            if (!t) return;
+            mouse.x = t.clientX - rect.left;
+            mouse.y = t.clientY - rect.top;
         }
 
         function Draw(x, y) {
@@ -346,6 +370,5 @@
             return Math.sqrt(dx * dx + dy * dy);
         }
     </script>
-
 </body>
 </html>
