@@ -3,8 +3,7 @@
 <head>
     <meta http-equiv='Content-Type' content='text/html; charset=UTF-8'>
     <meta name='viewport' content='width=device-width, initial-scale=1, shrink-to-fit=no'>
-    <script src="/tz.js"></script>
-    <title>网站正在建设中.</title>
+    <title>Website Under Construction</title>
     <style>
         @import url(https://fonts.googleapis.com/css?family=Montserrat);
         @import url(https://fonts.googleapis.com/css?family=Open+Sans:400,700);
@@ -79,10 +78,26 @@
             font-family: 'Text Me One', sans-serif;
         }
 
-        /* 渐变流动动画 */
+        /* Gradient flowing animation */
         @keyframes gradientMove {
             0%   { background-position: 0% 50%; }
             100% { background-position: 200% 50%; }
+        }
+
+        /* Copyright line at the bottom */
+        .copyright {
+            position: fixed;
+            left: 0;
+            right: 0;
+            bottom: 14px;
+            z-index: 5;
+            text-align: center;
+            font-family: 'Open Sans', sans-serif;
+            font-size: 0.85em;
+            color: #555;
+            letter-spacing: 1px;
+            opacity: 0.75;
+            pointer-events: none;
         }
 
         @media only screen and (min-width: 800px) {
@@ -113,65 +128,71 @@
             <div class='content'>
                 <div class='item'>
                     <!-- Place your content here to have it be centered vertically and horizontally  -->
-                    <h1>即将上线</h1>
-                    <p>网站正在建设中...</p>
+                    <h1>Coming Soon</h1>
+                    <p>Website Under Construction...</p>
                 </div>
             </div>
         </div>
     </div>
 
+    <!-- Copyright -->
+    <div class='copyright'>&copy; 2026 Your Company. All rights reserved.</div>
+
     <script>
         /* =========================================================
-         *  CONFIG —— 所有可修改项集中在这里，后期只改这一段即可
+         *  CONFIG — All editable options are collected here.
+         *  In most cases you only need to change this section.
          * ========================================================= */
         const CONFIG = {
-            // 粒子数量
+            // Number of particles
             particleCount: 100,
 
-            // 拖尾长度（历史轨迹点数，越大尾巴越长）
+            // Trail length (number of history points; larger = longer tail)
             trailLength: 45,
 
-            // 粒子基础大小范围
+            // Base particle size range
             sizeMin: 4,
             sizeMax: 10,
 
-            // 鼠标影响范围系数（越大，鼠标附近粒子放大越明显）
+            // Mouse influence factor (larger = particles near the cursor grow more)
             mouseInfluence: 10,
 
-            /* -------- 颜色方案 --------
-             * 可选值：
-             *   'original'  —— 原版灰蓝随机色
-             *   'rainbow'   —— 每个粒子随机彩虹色
-             *   'gradient'  —— 100 个粒子沿色相均匀分布（推荐，协调不杂乱）
-             *   'breathing' —— 颜色随时间流动（会呼吸的彩色）
+            /* -------- Particle color scheme --------
+             * Available values:
+             *   'original'  — original random gray/blue colors
+             *   'rainbow'   — each particle gets a random rainbow color
+             *   'gradient'  — particles spread evenly across the hue wheel (recommended)
+             *   'breathing' — colors flow over time (breathing rainbow)
              */
             colorMode: 'gradient',
 
-            // gradient / breathing 模式下的饱和度与亮度
+            // Saturation and lightness for gradient / breathing modes
             saturation: 100,   // 0-100
             lightness: 60,     // 0-100
 
-            // breathing 模式的变色速度（越小变色越快）
+            // Color change speed for breathing mode (smaller = faster)
             breathingSpeed: 20,
-            // breathing 模式下每个粒子之间的色相间隔
+            // Hue gap between particles in breathing mode
             breathingSpread: 3,
 
-            // original 模式下使用的颜色列表
+            // Colors used in original mode
             originalColors: ['#ccc', '#00174a', '#3c8dbc'],
 
-            /* -------- 背景与文字 --------
-             * 若想启用彩色渐变背景，把下面的注释打开即可。
-             * 也可以直接改 CSS 里的 .container background。
+            /* -------- Background and text --------
+             * To enable the colorful gradient background,
+             * simply turn the option below on.
+             * You can also edit the .container background in CSS directly.
              */
             enableGradientBackground: false,
             backgroundGradient: 'linear-gradient(135deg, #1a2a6c, #b21f1f, #fdbb2d)',
 
-            /* -------- 渐变文字 --------
-             * 标题和副标题各自使用一套独立的随机渐变，并让渐变流动。
+            /* -------- Gradient text --------
+             * The title and subtitle each use their own independent
+             * random gradient, and the gradient flows continuously.
              */
             enableGradientText: true,
 
-            // 标题「即将上线」的渐变（独立随机）
+            // Gradient for the title "Coming Soon" (independent random)
             titleGradient: (function () {
                 const h1 = Math.floor(Math.random() * 360);
                 const h2 = (h1 + 60 + Math.floor(Math.random() * 120)) % 360;
@@ -180,7 +201,7 @@
                 return 'linear-gradient(90deg, hsl(' + h1 + ',100%,65%), hsl(' + h2 + ',100%,65%), hsl(' + h3 + ',100%,65%), hsl(' + h4 + ',100%,65%))';
             })(),
 
-            // 副标题「网站正在建设中...」的渐变（独立随机）
+            // Gradient for the subtitle "Website Under Construction..." (independent random)
             subtitleGradient: (function () {
                 const h1 = Math.floor(Math.random() * 360);
                 const h2 = (h1 + 60 + Math.floor(Math.random() * 120)) % 360;
@@ -189,20 +210,20 @@
                 return 'linear-gradient(90deg, hsl(' + h1 + ',100%,65%), hsl(' + h2 + ',100%,65%), hsl(' + h3 + ',100%,65%), hsl(' + h4 + ',100%,65%))';
             })(),
         };
-        /* ===================== CONFIG 结束 ===================== */
+        /* ===================== CONFIG END ===================== */
 
 
-        // ---------- 根据 CONFIG 生成背景渐变（可选） ----------
+        // ---------- Apply gradient background (optional) ----------
         if (CONFIG.enableGradientBackground) {
             document.querySelector('.container').style.background = CONFIG.backgroundGradient;
         }
 
-        // ---------- 根据 CONFIG 生成渐变文字（可选，带流动动画） ----------
+        // ---------- Apply gradient text (optional, with flowing animation) ----------
         if (CONFIG.enableGradientText) {
             const h1El = document.querySelector('h1');
             const pEl = document.querySelector('p');
 
-            // 标题：使用 titleGradient
+            // Title: uses titleGradient
             h1El.style.background = CONFIG.titleGradient;
             h1El.style.backgroundSize = '200% 200%';
             h1El.style.webkitBackgroundClip = 'text';
@@ -211,7 +232,7 @@
             h1El.style.textShadow = 'none';
             h1El.style.animation = 'gradientMove 4s linear infinite';
 
-            // 副标题：使用 subtitleGradient
+            // Subtitle: uses subtitleGradient
             pEl.style.background = CONFIG.subtitleGradient;
             pEl.style.backgroundSize = '200% 200%';
             pEl.style.webkitBackgroundClip = 'text';
@@ -221,7 +242,7 @@
             pEl.style.animation = 'gradientMove 4s linear infinite';
         }
 
-        // ---------- 取色函数 ----------
+        // ---------- Color picker function ----------
         function getParticleColor(index, total) {
             switch (CONFIG.colorMode) {
                 case 'original':
@@ -236,7 +257,7 @@
                         CONFIG.saturation + '%, ' + CONFIG.lightness + '%)';
 
                 case 'breathing':
-                    // 初始色相，实际在动画中会随时间变化
+                    // Initial hue; it changes over time during the animation
                     return 'hsl(' + (index * CONFIG.breathingSpread % 360) + ', ' +
                         CONFIG.saturation + '%, ' + CONFIG.lightness + '%)';
 
@@ -245,7 +266,7 @@
             }
         }
 
-        // ---------- 初始化粒子 ----------
+        // ---------- Initialize particles ----------
         const particles = [];
         for (let i = 0; i < CONFIG.particleCount; i++) {
             particles.push({
@@ -300,14 +321,14 @@
                     particles[i].vy *= 1 + Math.random() * 0.005;
                 }
 
-                // 当前粒子的实际颜色（breathing 模式会随时间变化）
+                // Actual color of the current particle (breathing mode changes over time)
                 let particleColor = particles[i].color;
                 if (CONFIG.colorMode === 'breathing') {
                     const hue = (Date.now() / CONFIG.breathingSpeed + i * CONFIG.breathingSpread) % 360;
                     particleColor = 'hsl(' + hue + ', ' + CONFIG.saturation + '%, ' + CONFIG.lightness + '%)';
                 }
 
-                // 画拖尾
+                // Draw the trail
                 context.strokeStyle = particleColor;
                 context.beginPath();
                 for (var j = 0; j < particles[i].history.length; j++) {
@@ -315,7 +336,7 @@
                 }
                 context.stroke();
 
-                // 记录轨迹
+                // Record the trail
                 particles[i].history.push({
                     x: particles[i].x,
                     y: particles[i].y
@@ -324,13 +345,13 @@
                     particles[i].history.shift();
                 }
 
-                // 轨迹向鼠标方向偏移
+                // Trail drifts toward the mouse
                 for (var j = 0; j < particles[i].history.length; j++) {
                     particles[i].history[j].x += 0.01 * (mouse.x - particles[i].history[j].x) / (CONFIG.trailLength / j);
                     particles[i].history[j].y += 0.01 * (mouse.y - particles[i].history[j].y) / (CONFIG.trailLength / j);
                 }
 
-                // 鼠标距离影响圆点大小
+                // Mouse distance affects dot size
                 let distanceFactor = DistanceBetween(mouse, particles[i]);
                 distanceFactor = Math.pow(Math.max(Math.min(CONFIG.mouseInfluence - distanceFactor / 10, CONFIG.mouseInfluence), 2), 0.5);
 
